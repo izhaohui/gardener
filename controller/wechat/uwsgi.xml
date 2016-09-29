@@ -1,0 +1,24 @@
+<uwsgi>
+ <uid>www-data</uid>
+ <socket>127.0.0.1:8078</socket><!--listener with socks port for nginx -->
+ <listen>16</listen><!--listen queue size-->
+ <master>true</master><!--with a master process to control the fork process-->
+ <pidfile>/tmp/uwsgi.pid</pidfile><!--log pid-->
+ <processes>1</processes><!--use 16 processes-->
+ <buffer-size>32768</buffer-size><!--http parse buffer size,to small value cause nginx 502[the cookies or header is so long]-->
+ <post-buffering>1048576</post-buffering><!-- use for cache post fields -->
+ <reload-on-rss>64</reload-on-rss><!-- a fork process use more than 512MB will restart by master -->
+ <log-slow>2500</log-slow><!-- i don't know that means -->
+ <harakiri>60</harakiri><!-- a processes execute more than 60 second will restart by master -->
+ <py-tracebacker>/tmp/uwsgi.track</py-tracebacker><!-- a file base name than record realtime of a worker traceback -->
+ <close-on-exec>true</close-on-exec><!-- when use multiprocess,the fork process is share and hold the connection of its parent process,use this to close when fork -->
+ <touch-reload>/data/webapps/isol-center/startup.sh</touch-reload><!-- a simple way to restart uwsgi with touch startup.sh -->
+ <chdir>/data/webapps/isol-center</chdir><!-- change woek dir to this dir -->
+ <module>isol-center:app</module><!-- the app start up module -->
+ <static-map>/center/static=/data/webapps/isol-center/static</static-map>
+ <memory-report>true</memory-report><!-- report memory,for stat check -->
+ <logdate>true</logdate><!-- log timestamp in log ? -->
+ <stats>/tmp/uwsgi.socks</stats><!-- for use uwsgitop to see the workers status,busy,idle…… -->
+ <daemonize>/tmp/isol-center-wsgi.log</daemonize><!-- log print to this file -->
+ <logformat>core = %(core),worker = %(wid),pid = %(pid);for request "%(method) %(uri)" ,status %(status),size %(size),mem %(rss) </logformat>
+</uwsgi>
